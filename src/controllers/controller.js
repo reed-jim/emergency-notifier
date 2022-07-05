@@ -8,36 +8,38 @@ class Controller {
     }
 
     send = (req, res) => {
-        const registrationTokens = req.body.registration_tokens
+        const registrationTokens = req.body.registration_tokens.replace(/[\])}[{(]/g, '').split(', ')
 
         let message
 
-        if(req.body.type == "alert") {
+        if (req.body.type == "alarm") {
             message = {
                 data: {
-                    type: "alert",
-                    status: req.body.message_data
+                    type: "alarm",
+                    fromId: req.body.from,
+                    toIds: req.body.to,
+                    message: req.body.message_data
                 },
-                token: registrationTokens
+                tokens: registrationTokens
             }
         }
 
-        if(req.body.type == "message") {
+        if (req.body.type == "message") {
             message = {
                 data: {
                     type: "message",
-                    nfrom: req.body.from,
-                    nto: req.body.to,
+                    fromId: req.body.from,
+                    toId: req.body.to,
                     content: req.body.message_data
                 },
-                token: registrationTokens
+                tokens: registrationTokens
             }
         }
-        
 
+        // console.log(req.body.registration_tokens.replace(/[\])}[{(]/g, '').split(', '))
         console.log(message)
 
-        getMessaging().send(message)
+        getMessaging().sendMulticast(message)
             .then((response) => {
                 console.log('Successfully sent message:', response)
             })
@@ -45,7 +47,7 @@ class Controller {
                 console.log('Error sending message:', error)
             })
 
-        res.status(200).send({ message: "alerted!" })
+        res.status(200).send({ message: "alarmed!" })
 
     }
 }

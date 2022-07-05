@@ -3,7 +3,7 @@ const bodyParser = require("body-parser")
 var compression = require("compression")
 var helmet = require("helmet")
 const cors = require("cors")
-// require('dotenv').config()
+require('dotenv').config()
 
 var admin = require('firebase-admin')
 const { initializeApp } = require("firebase-admin/app")
@@ -21,7 +21,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
-
+// console.log(process.env.SERVICE_ACCOUNT_JSON)
 const run = async (db) => {
     initializeApp({
         credential: admin.credential.cert(
